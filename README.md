@@ -18,7 +18,7 @@ Click here to test the app 👉 [Inventory Analysis Web App](https://sudarshanve
 
 # Dataset
 The app requires a dataset to run.  
-- Sample dataset is available here: [Sample Sales Data (Excel)](./data/sample_sales_data_for_forecasting_fixd.xlsx)  
+- Sample dataset is available here: [Sample Sales Data (Excel)](./data/sample_sales_data_for_forecasting_fixed.xlsx)  
 - You can also access the **data folder** in the repository to get sample datasets.
 
 
