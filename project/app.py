@@ -14,20 +14,41 @@ forecast_type = st.sidebar.selectbox("Forecast Type", ["Basic (Moving Average + 
 forecast_days = st.sidebar.slider("Forecast Days", min_value=7, max_value=30, value=14)
 
 if uploaded_file:
-    # Load and clean data
-    df = load_sales_data(uploaded_file)
-    st.subheader("Raw Data Preview")
-    df_display = df.copy()
-    if 'sale_date' in df_display.columns:
-        df_display['sale_date'] = pd.to_datetime(df_display['sale_date'], errors='coerce').dt.date
-    st.dataframe(df_display)
+    # Load and clean data with error handling
+    try:
+        df = load_sales_data(uploaded_file)
+        # Check required columns
+        required_cols = {'product_name', 'sale_date', 'quantity_sold'}
+        if not required_cols.issubset(df.columns):
+            raise ValueError("Excel file format is incorrect. Required columns: product_name, sale_date, quantity_sold.")
+        st.subheader("Raw Data Preview")
+        df_display = df.copy()
+        if 'sale_date' in df_display.columns:
+            df_display['sale_date'] = pd.to_datetime(df_display['sale_date'], errors='coerce').dt.date
+        st.dataframe(df_display)
 
-    df_clean = clean_sales_data(df)
-    st.subheader("Cleaned Data Preview")
-    df_clean_display = df_clean.copy()
-    if 'sale_date' in df_clean_display.columns:
-        df_clean_display['sale_date'] = pd.to_datetime(df_clean_display['sale_date'], errors='coerce').dt.date
-    st.dataframe(df_clean_display)
+        df_clean = clean_sales_data(df)
+        st.subheader("Cleaned Data Preview")
+        df_clean_display = df_clean.copy()
+        if 'sale_date' in df_clean_display.columns:
+            df_clean_display['sale_date'] = pd.to_datetime(df_clean_display['sale_date'], errors='coerce').dt.date
+        st.dataframe(df_clean_display)
+        file_load_error = None
+    except Exception as e:
+        file_load_error = str(e)
+        st.error(f"❌ {file_load_error}\nPlease upload an Excel file with columns: product_name, sale_date, quantity_sold.")
+        # Provide sample file download
+        import os
+        sample_path = os.path.join('data', 'sample_sales_data.xlsx')
+        if os.path.exists(sample_path):
+            with open(sample_path, 'rb') as f:
+                st.download_button(
+                    label="Download Sample Excel File",
+                    data=f.read(),
+                    file_name="sample_sales_data.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                )
+        st.stop()
 
     # Forecast
     st.header("Forecast Results")
