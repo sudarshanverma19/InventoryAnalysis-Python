@@ -38,14 +38,13 @@ if uploaded_file:
         file_load_error = str(e)
         st.error(f"❌ {file_load_error}\nPlease upload an Excel file with columns: product_name, sale_date, quantity_sold.")
         # Provide sample file download
-        import os
-        sample_path = os.path.join('data', 'sample_sales_data.xlsx')
+        sample_path = os.path.join('data', 'sample_sales_data_for_forecasting_fixed.xlsx')
         if os.path.exists(sample_path):
             with open(sample_path, 'rb') as f:
                 st.download_button(
                     label="Download Sample Excel File",
                     data=f.read(),
-                    file_name="sample_sales_data.xlsx",
+                    file_name="sample_sales_data_for_forecasting_fixed.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
         st.stop()
